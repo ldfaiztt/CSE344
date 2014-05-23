@@ -1,0 +1,7 @@
+Part B
+-1 You use 11 indices. Could you dispose of one without affecting the performance too much?
+
+Part C
+3. -3 More explanations. Empty values do not account for all entries.
+4. -5 The query is wrong becuase some attributes in SELECT are not in GROUP BY.
+5. -5 The query is wrong becuase some attributes in SELECT are not in GROUP BY.
