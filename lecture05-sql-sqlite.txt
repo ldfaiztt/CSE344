@@ -1,0 +1,571 @@
+dhalperi@dhm CSE 344 % sqlite3 lecture05.sql
+SQLite version 3.7.13 2012-07-17 17:46:21
+Enter ".help" for instructions
+Enter SQL statements terminated with a ";"
+sqlite> .schema
+sqlite> sqlite> .schema
+sqlite> create table Purchase
+   ...>   (pid int primary key,
+   ...>    product text,
+   ...>    price float,
+   ...>    quantity int,
+   ...>    month varchar(15));
+sqlite> .import purchase.txt Purchase
+sqlite> SELECT * FROM Purchase;
+1|bagel|1.99|20|september
+2|bagel|2.5|12|december
+3|banana|0.99|9|september
+4|banana|1.59|9|february
+5|gizmo|99.99|5|february
+6|gizmo|99.99|3|march
+7|gizmo|49.99|3|april
+8|gadget|89.99|3|january
+9|gadget|89.99|3|february
+10|gadget|49.99|3|march
+11|orange|null|5|may
+12|orange|1.29|34|january
+sqlite> .head on
+sqlite> .mode column
+sqlite> .nullvalue NULL
+sqlite> UPDATE Purchase SET price=null WHERE price='null';
+sqlite> SELECT * FROM Purchase;
+pid         product     price       quantity    month     
+----------  ----------  ----------  ----------  ----------
+1           bagel       1.99        20          september 
+2           bagel       2.5         12          december  
+3           banana      0.99        9           september 
+4           banana      1.59        9           february  
+5           gizmo       99.99       5           february  
+6           gizmo       99.99       3           march     
+7           gizmo       49.99       3           april     
+8           gadget      89.99       3           january   
+9           gadget      89.99       3           february  
+10          gadget      49.99       3           march     
+11          orange      NULL        5           may       
+12          orange      1.29        34          january   
+sqlite> sqlite> SELECT COUNT(*) FROM Purchase;
+COUNT(*)  
+----------
+12        
+sqlite> 
+sqlite> SELECT COUNT(*) FROM Purchase;
+COUNT(*)  
+----------
+12        
+sqlite> SELECT * FROM Purchase;
+pid         product     price       quantity    month     
+----------  ----------  ----------  ----------  ----------
+1           bagel       1.99        20          september 
+2           bagel       2.5         12          december  
+3           banana      0.99        9           september 
+4           banana      1.59        9           february  
+5           gizmo       99.99       5           february  
+6           gizmo       99.99       3           march     
+7           gizmo       49.99       3           april     
+8           gadget      89.99       3           january   
+9           gadget      89.99       3           february  
+10          gadget      49.99       3           march     
+11          orange      NULL        5           may       
+12          orange      1.29        34          january   
+sqlite> SELECT SUM(quantity) FROM Purchase;
+SUM(quantity)
+-------------
+109          
+sqlite> SELECT SUM(quantity) FROM Purchase GROUP BY product;
+SUM(quantity)
+-------------
+32           
+18           
+9            
+11           
+39           
+sqlite> SELECT product,SUM(quantity) FROM Purchase GROUP BY product;
+product     SUM(quantity)
+----------  -------------
+bagel       32           
+banana      18           
+gadget      9            
+gizmo       11           
+orange      39           
+sqlite> SELECT product,SUM(quantity*price) FROM Purchase GROUP BY product;
+product     SUM(quantity*price)
+----------  -------------------
+bagel       69.8               
+banana      23.22              
+gadget      689.91             
+gizmo       949.89             
+orange      43.86              
+sqlite> SELECT product,AVG(quantity*price) FROM Purchase GROUP BY product;
+product     AVG(quantity*price)
+----------  -------------------
+bagel       34.9               
+banana      11.61              
+gadget      229.97             
+gizmo       316.63             
+orange      43.86              
+sqlite> SELECT product,SUM(quantity*price)/COUNT(*) FROM Purchase GROUP BY product;
+product     SUM(quantity*price)/COUNT(*)
+----------  ----------------------------
+bagel       34.9                        
+banana      11.61                       
+gadget      229.97                      
+gizmo       316.63                      
+orange      21.93                       
+sqlite> SELECT product,SUM(quantity*price)/COUNT(*) FROM Purchase WHERE price is not null GROUP BY product;
+product     SUM(quantity*price)/COUNT(*)
+----------  ----------------------------
+bagel       34.9                        
+banana      11.61                       
+gadget      229.97                      
+gizmo       316.63                      
+orange      43.86                       
+sqlite> SELECT product,SUM(quantity*price)/COUNT(price) FROM Purchase GROUP BY product;
+product     SUM(quantity*price)/COUNT(price)
+----------  --------------------------------
+bagel       34.9                            
+banana      11.61                           
+gadget      229.97                          
+gizmo       316.63                          
+orange      43.86                           
+sqlite> SELECT month,SUM(quantity*price) FROM Purchase GROUP BY month;
+month       SUM(quantity*price)
+----------  -------------------
+april       149.97             
+december    30.0               
+february    784.23             
+january     313.83             
+march       449.94             
+may         NULL               
+september   48.71              
+sqlite> SELECT * FROM Purchase;               
+pid         product     price       quantity    month     
+----------  ----------  ----------  ----------  ----------
+1           bagel       1.99        20          september 
+2           bagel       2.5         12          december  
+3           banana      0.99        9           september 
+4           banana      1.59        9           february  
+5           gizmo       99.99       5           february  
+6           gizmo       99.99       3           march     
+7           gizmo       49.99       3           april     
+8           gadget      89.99       3           january   
+9           gadget      89.99       3           february  
+10          gadget      49.99       3           march     
+11          orange      NULL        5           may       
+12          orange      1.29        34          january   
+sqlite> SELECT month,SUM(quantity*price) FROM Purchase WHERE price is not null GROUP BY month;
+month       SUM(quantity*price)
+----------  -------------------
+april       149.97             
+december    30.0               
+february    784.23             
+january     313.83             
+march       449.94             
+september   48.71              
+sqlite> SELECT month,SUM(quantity*price) FROM Purchase WHERE price is not null GROUP BY month SORT BY SUM(quantity*price);
+Error: near "SORT": syntax error
+sqlite> SELECT month,SUM(quantity*price) FROM Purchase WHERE price is not null GROUP BY month ORDER BY SUM(quantity*price);
+month       SUM(quantity*price)
+----------  -------------------
+december    30.0               
+september   48.71              
+april       149.97             
+january     313.83             
+march       449.94             
+february    784.23             
+sqlite> SELECT month,SUM(quantity*price) FROM Purchase WHERE price is not null GROUP BY month ORDER BY SUM(quantity*price) DESC;
+month       SUM(quantity*price)
+----------  -------------------
+february    784.23             
+march       449.94             
+january     313.83             
+april       149.97             
+september   48.71              
+december    30.0               
+sqlite> SELECT DISTINCT price FROM Purchase;              price     
+----------
+1.99      
+2.5       
+0.99      
+1.59      
+99.99     
+49.99     
+89.99     
+NULL      
+1.29      
+sqlite> SELECT price FROM Purchase GROUP BY price;
+price     
+----------
+NULL      
+0.99      
+1.29      
+1.59      
+1.99      
+2.5       
+49.99     
+89.99     
+99.99     
+sqlite> create table Product   (pid int primary key,   pname varchar(15),   manufacturer varchar(15));
+sqlite> 
+sqlite> insert into product values(1,'bagel','Sunshine Co.');
+sqlite> insert into product values(2,'banana','BusyHands');
+sqlite> insert into product values(3,'gizmo','GizmoWorks');
+sqlite> insert into product values(4,'gadget','BusyHands');
+sqlite> insert into product values(5,'powerGizmo','PowerWorks');
+sqlite> .schema
+CREATE TABLE Product   (pid int primary key,   pname varchar(15),   manufacturer varchar(15));
+CREATE TABLE Purchase
+  (pid int primary key,
+   product text,
+   price float,
+   quantity int,
+   month varchar(15));
+sqlite> SELECT * FROM Product;
+pid         pname       manufacturer
+----------  ----------  ------------
+1           bagel       Sunshine Co.
+2           banana      BusyHands   
+3           gizmo       GizmoWorks  
+4           gadget      BusyHands   
+5           powerGizmo  PowerWorks  
+sqlite> SELECT * FROM Purchase;
+pid         product     price       quantity    month     
+----------  ----------  ----------  ----------  ----------
+1           bagel       1.99        20          september 
+2           bagel       2.5         12          december  
+3           banana      0.99        9           september 
+4           banana      1.59        9           february  
+5           gizmo       99.99       5           february  
+6           gizmo       99.99       3           march     
+7           gizmo       49.99       3           april     
+8           gadget      89.99       3           january   
+9           gadget      89.99       3           february  
+10          gadget      49.99       3           march     
+11          orange      NULL        5           may       
+12          orange      1.29        34          january   
+sqlite> SELECT x.manufacturer, count(*)
+   ...> FROM Product x, Purchase y
+   ...> WHERE x.pname = y.product
+   ...> GROUP BY  x.manufacturer
+   ...> ;
+manufacturer  count(*)  
+------------  ----------
+BusyHands     5         
+GizmoWorks    3         
+Sunshine Co.  2         
+sqlite> SELECT x.manufacturer, y.month, count(*)
+   ...> FROM Product x, Purchase y
+   ...> WHERE x.pname = y.product
+   ...> GROUP BY  x.manufacturer, y.month
+   ...> 
+   ...> ;
+manufacturer  month       count(*)  
+------------  ----------  ----------
+BusyHands     february    2         
+BusyHands     january     1         
+BusyHands     march       1         
+BusyHands     september   1         
+GizmoWorks    april       1         
+GizmoWorks    february    1         
+GizmoWorks    march       1         
+Sunshine Co.  december    1         
+Sunshine Co.  september   1         
+sqlite> SELECT x.manufacturer, count(*)
+   ...> FROM Product x, Purchase y
+   ...> WHERE x.pname = y.product
+   ...> GROUP BY  x.manufacturer
+   ...> ;
+manufacturer  count(*)  
+------------  ----------
+BusyHands     5         
+GizmoWorks    3         
+Sunshine Co.  2         
+sqlite> SELECT * FROM Product x, Purchase y
+   ...> WHERE x.pname = y.product
+   ...> ;
+pid         pname       manufacturer  pid         product     price       quantity    month     
+----------  ----------  ------------  ----------  ----------  ----------  ----------  ----------
+1           bagel       Sunshine Co.  1           bagel       1.99        20          september 
+1           bagel       Sunshine Co.  2           bagel       2.5         12          december  
+2           banana      BusyHands     3           banana      0.99        9           september 
+2           banana      BusyHands     4           banana      1.59        9           february  
+3           gizmo       GizmoWorks    5           gizmo       99.99       5           february  
+3           gizmo       GizmoWorks    6           gizmo       99.99       3           march     
+3           gizmo       GizmoWorks    7           gizmo       49.99       3           april     
+4           gadget      BusyHands     8           gadget      89.99       3           january   
+4           gadget      BusyHands     9           gadget      89.99       3           february  
+4           gadget      BusyHands     10          gadget      49.99       3           march     
+sqlite> SELECT * FROM Product;
+pid         pname       manufacturer
+----------  ----------  ------------
+1           bagel       Sunshine Co.
+2           banana      BusyHands   
+3           gizmo       GizmoWorks  
+4           gadget      BusyHands   
+5           powerGizmo  PowerWorks  
+sqlite> SELECT * FROM Purchase;
+pid         product     price       quantity    month     
+----------  ----------  ----------  ----------  ----------
+1           bagel       1.99        20          september 
+2           bagel       2.5         12          december  
+3           banana      0.99        9           september 
+4           banana      1.59        9           february  
+5           gizmo       99.99       5           february  
+6           gizmo       99.99       3           march     
+7           gizmo       49.99       3           april     
+8           gadget      89.99       3           january   
+9           gadget      89.99       3           february  
+10          gadget      49.99       3           march     
+11          orange      NULL        5           may       
+12          orange      1.29        34          january   
+sqlite> SELECT x.manufacturer, y.month, count(*)
+   ...> FROM Product x, Purchase y
+   ...> WHERE x.pname = y.product
+   ...> GROUP BY  x.manufacturer, y.month 
+   ...> ;
+manufacturer  month       count(*)  
+------------  ----------  ----------
+BusyHands     february    2         
+BusyHands     january     1         
+BusyHands     march       1         
+BusyHands     september   1         
+GizmoWorks    april       1         
+GizmoWorks    february    1         
+GizmoWorks    march       1         
+Sunshine Co.  december    1         
+Sunshine Co.  september   1         
+sqlite> SELECT x.manufacturer, y.month, count(*)
+   ...> FROM Product x, Purchase y
+   ...> WHERE x.pname = y.product
+   ...> GROUP BY  x.manufacturer
+   ...> ;
+manufacturer  month       count(*)  
+------------  ----------  ----------
+BusyHands     march       5         
+GizmoWorks    march       3         
+Sunshine Co.  september   2         
+sqlite> SELECT x.manufacturer, y.month, count(*)
+   ...>    ...> FROM Product x, Purchase y
+   ...>    ...> WHERE x.pname = y.product
+   ...>    ...> GROUP BY  x.manufacturer;
+Error: near ".": syntax error
+sqlite> SELECT product, SUM(quantity*price)/COUNT(price)
+   ...> FROM Purchase
+   ...> GROUP BY product
+   ...> HAVING COUNT(price) > 1;
+product     SUM(quantity*price)/COUNT(price)
+----------  --------------------------------
+bagel       34.9                            
+banana      11.61                           
+gadget      229.97                          
+gizmo       316.63                          
+sqlite> SELECT product, AVG(quantity*price)
+   ...> FROM Purchase
+   ...> GROUP BY product
+   ...> HAVING COUNT(price) > 1;
+product     AVG(quantity*price)
+----------  -------------------
+bagel       34.9               
+banana      11.61              
+gadget      229.97             
+gizmo       316.63             
+sqlite> SELECT x.manufacturer, count(*)
+   ...> FROM Product x, Purchase y
+   ...> WHERE x.pname = y.product
+   ...> GROUP BY x.manufacturer
+   ...> 
+   ...> ;
+manufacturer  count(*)  
+------------  ----------
+BusyHands     5         
+GizmoWorks    3         
+Sunshine Co.  2         
+sqlite> SELECT * FROM Product;
+pid         pname       manufacturer
+----------  ----------  ------------
+1           bagel       Sunshine Co.
+2           banana      BusyHands   
+3           gizmo       GizmoWorks  
+4           gadget      BusyHands   
+5           powerGizmo  PowerWorks  
+sqlite> SELECT DISTINCT manufacturer FROM Product;
+manufacturer
+------------
+Sunshine Co.
+BusyHands   
+GizmoWorks  
+PowerWorks  
+sqlite> SELECT * FROM Purchases;
+Error: no such table: Purchases
+sqlite> SELECT * FROM Purchase;
+pid         product     price       quantity    month     
+----------  ----------  ----------  ----------  ----------
+1           bagel       1.99        20          september 
+2           bagel       2.5         12          december  
+3           banana      0.99        9           september 
+4           banana      1.59        9           february  
+5           gizmo       99.99       5           february  
+6           gizmo       99.99       3           march     
+7           gizmo       49.99       3           april     
+8           gadget      89.99       3           january   
+9           gadget      89.99       3           february  
+10          gadget      49.99       3           march     
+11          orange      NULL        5           may       
+12          orange      1.29        34          january   
+sqlite> SELECT x.manufacturer, count(*)
+   ...> FROM Product x, Purchase y
+   ...> WHERE x.pname = y.product
+   ...> GROUP BY x.manufacturer
+   ...> ;
+manufacturer  count(*)  
+------------  ----------
+BusyHands     5         
+GizmoWorks    3         
+Sunshine Co.  2         
+sqlite> SELECT product, count(*)
+   ...> FROM purchase
+   ...> GROUP BY product
+   ...> ;
+product     count(*)  
+----------  ----------
+bagel       2         
+banana      2         
+gadget      3         
+gizmo       3         
+orange      2         
+sqlite> SELECT product, count(*)
+   ...> FROM purchase
+   ...> WHERE price > 2.0
+   ...> GROUP BY product
+   ...> ;
+product     count(*)  
+----------  ----------
+bagel       1         
+gadget      3         
+gizmo       3         
+sqlite> SELECT x.manufacturer, count(*)
+   ...> FROM Product x, Purchase y
+   ...> WHERE x.pname = y.product
+   ...> GROUP BY x.manufacturer
+   ...> ;
+manufacturer  count(*)  
+------------  ----------
+BusyHands     5         
+GizmoWorks    3         
+Sunshine Co.  2         
+sqlite> SELECT x.manufacturer, count(y.pid)
+   ...> FROM Product x LEFT OUTER JOIN Purchase y 
+   ...> ON x.pname = y.product
+   ...> ;
+manufacturer  count(y.pid)
+------------  ------------
+PowerWorks    10          
+sqlite> SELECT *
+   ...> FROM Product x LEFT OUTER JOIN Purchase y 
+   ...> ON x.pname = y.product
+   ...> ;
+pid         pname       manufacturer  pid         product     price       quantity    month     
+----------  ----------  ------------  ----------  ----------  ----------  ----------  ----------
+1           bagel       Sunshine Co.  1           bagel       1.99        20          september 
+1           bagel       Sunshine Co.  2           bagel       2.5         12          december  
+2           banana      BusyHands     3           banana      0.99        9           september 
+2           banana      BusyHands     4           banana      1.59        9           february  
+3           gizmo       GizmoWorks    5           gizmo       99.99       5           february  
+3           gizmo       GizmoWorks    6           gizmo       99.99       3           march     
+3           gizmo       GizmoWorks    7           gizmo       49.99       3           april     
+4           gadget      BusyHands     8           gadget      89.99       3           january   
+4           gadget      BusyHands     9           gadget      89.99       3           february  
+4           gadget      BusyHands     10          gadget      49.99       3           march     
+5           powerGizmo  PowerWorks    NULL        NULL        NULL        NULL        NULL      
+sqlite> SELECT x.manufacturer, count(y.pid)
+   ...> FROM Product x LEFT OUTER JOIN Purchase y 
+   ...> ON x.pname = y.product
+   ...> GROUP BY x.manufacturer
+   ...> ;
+manufacturer  count(y.pid)
+------------  ------------
+BusyHands     5           
+GizmoWorks    3           
+PowerWorks    0           
+Sunshine Co.  2           
+sqlite> SELECT * FROM Product;
+pid         pname       manufacturer
+----------  ----------  ------------
+1           bagel       Sunshine Co.
+2           banana      BusyHands   
+3           gizmo       GizmoWorks  
+4           gadget      BusyHands   
+5           powerGizmo  PowerWorks  
+sqlite> SELECT * From Purchase;
+pid         product     price       quantity    month     
+----------  ----------  ----------  ----------  ----------
+1           bagel       1.99        20          september 
+2           bagel       2.5         12          december  
+3           banana      0.99        9           september 
+4           banana      1.59        9           february  
+5           gizmo       99.99       5           february  
+6           gizmo       99.99       3           march     
+7           gizmo       49.99       3           april     
+8           gadget      89.99       3           january   
+9           gadget      89.99       3           february  
+10          gadget      49.99       3           march     
+11          orange      NULL        5           may       
+12          orange      1.29        34          january   
+sqlite> SELECT manufacturer, SUM
+   ...> (quantity)
+   ...> FROM Product, Purchase
+   ...> WHERE pname = product
+   ...> GROUP BY manufacturer
+   ...> HAVING SUm(quantity) > 10;
+manufacturer  SUM
+(quantity)
+------------  --------------
+BusyHands     27            
+GizmoWorks    11            
+Sunshine Co.  32            
+sqlite> SELECT manufacturer, SUM(quantity)
+   ...> FROM Product, Purchase
+   ...> WHERE pname = product
+   ...> GROUP BY manufacturer
+   ...> HAVING SUM(quantity) > 10
+   ...> ORDER BY SUM(quantity) DESC;
+manufacturer  SUM(quantity)
+------------  -------------
+Sunshine Co.  32           
+BusyHands     27           
+GizmoWorks    11           
+sqlite> SELECT manufacturer, SUM(quantity) AS total
+   ...> FROM Product, Purchase
+   ...> WHERE pname = product
+   ...> GROUP BY manufacturer
+   ...> HAVING SUM(quantity) > 10
+   ...> ORDER BY total DESC;
+manufacturer  total     
+------------  ----------
+Sunshine Co.  32        
+BusyHands     27        
+GizmoWorks    11        
+sqlite> SELECT manufacturer, SUM(quantity) AS total
+   ...> FROM Product, Purchase
+   ...> WHERE pname = product
+   ...> GROUP BY manufacturer
+   ...> HAVING total > 10
+   ...> ORDER BY total DESC;
+manufacturer  total     
+------------  ----------
+Sunshine Co.  32        
+BusyHands     27        
+GizmoWorks    11        
+sqlite> SELECT * FROM Purchase, Product WHERE pname = product;
+pid         product     price       quantity    month       pid         pname       manufacturer
+----------  ----------  ----------  ----------  ----------  ----------  ----------  ------------
+1           bagel       1.99        20          september   1           bagel       Sunshine Co.
+2           bagel       2.5         12          december    1           bagel       Sunshine Co.
+3           banana      0.99        9           september   2           banana      BusyHands   
+4           banana      1.59        9           february    2           banana      BusyHands   
+5           gizmo       99.99       5           february    3           gizmo       GizmoWorks  
+6           gizmo       99.99       3           march       3           gizmo       GizmoWorks  
+7           gizmo       49.99       3           april       3           gizmo       GizmoWorks  
+8           gadget      89.99       3           january     4           gadget      BusyHands   
+9           gadget      89.99       3           february    4           gadget      BusyHands   
+10          gadget      49.99       3           march       4           gadget      BusyHands   
+sqlite> 
