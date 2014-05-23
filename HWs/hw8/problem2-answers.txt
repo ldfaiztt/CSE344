@@ -1,0 +1,25 @@
+Chun-Wei Chen
+mijc0517@cs
+CSE 344 HW8 Problem 2
+03/10/14
+
+4 MapReduce jobs
+
+1st:
+      Map tasks: 33
+      Reduce tasks: 3
+      Running time: 4mins, 30sec
+2nd:
+      Map tasks: 1
+      Reduce tasks: 1
+      Running time: 1mins, 22sec
+3rd:
+      Map tasks: 1
+      Reduce tasks: 1
+      Running time: 1mins, 2sec
+4th:
+      Map tasks: 1
+      Reduce tasks: 1
+      Running time: 1mins, 2sec
+
+Total running time: 7mins, 56sec (summing up all four jobs)

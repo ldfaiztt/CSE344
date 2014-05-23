@@ -1,0 +1,8 @@
+4a. -1 -> o ¡Ú o2 condition is incorrect. the employees under the same manager need to have the same office.
+
+5a. -2 -> join on manager table is missing [refer solution]
+Also, Q(a, b) is incorrect. What are a and b? They are not defined anywhere in the query.
+
+5b. -3 -> query incorrect, does not return second level managers [refer solution]
+
+EC. -1 -> partially correct. ManagedBy(x, ¡¥Alice¡¦) is incorrect usage. Manager table does not have name. You need a join on the employee table for the same [refer solution]

@@ -1,0 +1,20 @@
+Chun-Wei Chen
+mijc0517@cs
+CSE 344 HW8 Problem 1
+03/10/14
+
+
+1.1 3 MapReduce jobs
+1.2 
+      1st MapReduce job: 50 reduce tasks
+      2nd MapReduce job: 1 reduce task
+      3rd MapReduce job: 50 reduce tasks
+1.3 
+      1st MapReduce job: 4mins, 52sec
+      2nd MapReduce job: 1mins, 22sec
+      3rd MapReduce job: 2mins, 43sec
+      Entire script: 8mins, 57sec (summing up all three)
+1.4 
+      ntriples: {subject: chararray,predicate: chararray,object: chararray}
+      objects: {group: chararray,ntriples: {(subject: chararray,predicate: chararray,object: chararray)}}
+      count_by_object: {group: chararray,count: long}

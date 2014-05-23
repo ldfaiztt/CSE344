@@ -1,0 +1,3 @@
+-20 Search function not working
+
+-1 Return function gets stuck and always throws an error if an enter key is pressed to proceed. Return functionality is working though.

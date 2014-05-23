@@ -1,0 +1,93 @@
+1.
+
+RC:
+q(eid, name) = \exists office   \exists mid1  \exists mid2  
+                  [Employee(eid, name, office) and
+                   Manager(eid,mid1) and
+                   Manager(eid,mid2) and
+                   mid1 != mid2]
+
+Datalog:
+q(eid, name) = Employee(eid, name, office),Manager(eid,mid1),Manager(eid,mid2), mid1 != mid2]
+
+RA:
+Pi[Employee Join_{eid=eid} sigma_{mid1!=mid2} (Manager Join_{eid=eid} Manager)]
+
+2.
+
+RC:
+q(eid, name) = \exists office [Employee(eid, name, office) and
+                               not (\exists mid  Manager(eid, mid))]
+
+Datalog:
+Managed(eid) = Manager(eid,-)
+q(eid,name)  = Employee(eid,name,office),not Managed(eid)
+                  
+RA:
+Pi_{eid,name}(Employee) - Pi_{eid,name}(Empolyee Join_{eid=eid} Manager(eid,mid))
+
+
+3.
+
+RC: (see datalog)
+
+Datalog:
+q(office) :- Employee(eid,'Alice',-),Manager(eid,mid),Employee(mid,-,office)
+
+RA:
+Pi_{office}((sigma_{name='Alice'}Employee) Join_{eid=eid} (Pi_{M.eid, E.office}(Manager M Join_{M.mid=E.eid} Employee E)))
+
+4.
+
+RC:
+q(mid, mname, o) = exists mo exists eid exists name
+                    [Employee(mid,mname,mo) and Manager(eid,mid) and Employee(eid,name,o)
+                     and [forall eid1 forall name1 forall o1 forall eid2 forall name2 forall o2 ((Employee(eid1, name1, o1) and Manager(eid1,mid) and Employee(eid2, name2, o2) and Manager(eid2, mid))  ==> (o1 = o2))]]
+
+
+Datalog:
+ManagesDifferentOffice(mid) = Employee(eid1, -, o1), Manager(eid1, mid), Employee(eid2,-,o2), Manager(eid2, mid), o1!=o2
+q(mid,name, o) =  Employee(mid,name,-), Manager(eid,mid), Employee(eid,-,o),
+                  not ManagesDifferentOffice(mid)
+
+
+RA:
+Pi_{mid,name,o}
+   [(Employee Join_{eid = eid} Manager))
+   Join_{mid = mid} 
+   [[Pi_{mid, name} Manager M]
+    - 
+    (rho_{mid, name} (Pi_{eid, name} Employee EM2)) 
+      Join_{mid = mid} 
+     Pi_{mid}[Pi_{mid, o}((Manager M1 Join_{M1.eid = E1.eid} Employee E1) Join_{mid = mid, o != o2}
+     rho_{mid, o2} Pi_{mid, o}(Manager M2 Join_{M2.eid = E2.eid} Empoloyee E2))]
+    ]
+    ]
+
+5.
+
+
+RC:
+
+q(mid, mname) = exists eid exists moffice [ Manager(eid,mid) and Employee(mid, mname, moffice)
+                          and
+                          forall eid1 (Manager(eid1,mid) ==> exists eid2 Manager(eid2,eid1))]
+
+Datalog:
+
+Mngr(mid) = Manager(-,mid)
+notSecondLevel(mid) = Manager(eid1,mid), not Mngr(eid1)
+q(mid, mname) = Manager(eid,mid), Employee(mid, mname, -), not notSecondLevel(mid)
+
+RA:
+
+  rho_{mid, mname} [Pi_{eid, name} Employee E]
+  Join_{mid = mid}
+  [Pi_{mid} Manager M3 -
+        [rho_{mid} (Pi_{M1.eid} Manager M1) -   Pi_{M2.mid} Manager M2]
+  ]
+
+EC:
+
+q(eid) = Empolyee(mid,'Alice',-), Manager(eid,mid)
+q(eid) = Manager(eid, mid), q(mid)

@@ -1,0 +1,4 @@
+1. -2 -> DTD not followed. The result should be like of this format:
+<city>
+   <name>Abancay</name>
+</city>

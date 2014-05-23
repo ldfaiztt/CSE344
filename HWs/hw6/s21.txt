@@ -1,0 +1,14 @@
+month       discount  
+----------  ----------
+apr         15%       
+aug         15%       
+dec         33%       
+feb         10%       
+jan         33%       
+jul         33%       
+jun         10%       
+mar         15%       
+may         10%       
+nov         15%       
+oct         10%       
+sep         15%       

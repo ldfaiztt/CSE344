@@ -1,0 +1,27 @@
+Chun-Wei Chen
+mijc0517@cs
+CSE 344 HW8 Problem 4
+03/11/14
+
+NOTE: I ran the Pig script I wrote on an AMI 2.3.6 cluster since running on an AMI 2.4.2 cluster failed every time when I ran my script.
+
+4 MapReduce jobs
+
+1st:
+      Map tasks: 7908
+      Reduce tasks: 50
+      Running time: 3hrs, 57mins, 38sec
+2nd:
+      Map tasks: 75
+      Reduce tasks: 50
+      Running time: 5mins, 16sec
+3rd:
+      Map tasks: 1
+      Reduce tasks: 1
+      Running time: 45sec
+4th:
+      Map tasks: 1
+      Reduce tasks: 50
+      Running time: 1mins, 8sec
+
+Total running time: 4hrs, 4mins, 47sec (summing up all four jobs)
